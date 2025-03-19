@@ -1,0 +1,67 @@
+name: Go Docker Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log - Start Build
+        run: echo "🛠️ Starting Go Docker Build Process"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log - Show environment details
+        run: |
+          echo "🔍 System Details:"
+          uname -a
+          echo "🐹 Go Version:"
+          go version
+          echo "🐳 Docker Version:"
+          docker version
+          echo "ℹ️ Docker Info:"
+          docker info
+
+      - name: Log - Start Docker Build
+        run: echo "📦 Building Docker Image..."
+
+      - name: Build Docker image
+        run: |
+          docker build --progress=plain -t md-tempo-svc .
+      
+      - name: Log - Build Completed
+        run: echo "✅ Docker Build Completed Successfully!"
+  deploy-qa:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to QA
+        run: |
+          echo "🚀 Deploying to QA..."
+
+  deploy-staging:
+    needs: deploy-qa
+    runs-on: ubuntu-latest
+    environment: stag
+    steps:
+      - name: Deploy to Staging
+        run: |
+          echo "🚀 Deploying to Staging..."
+
+  deploy-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Deploy to Production
+        run: |
+          echo "🚀 Deploying to Production..."
