@@ -38,6 +38,7 @@ jobs:
       - name: Log - Build Completed
         run: echo "✅ Docker Build Completed Successfully!"
   deploy-qa:
+    name: QA Deployment
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +47,7 @@ jobs:
           echo "🚀 Deploying to QA..."
 
   deploy-staging:
+    name: Staging Deployment
     needs: deploy-qa
     runs-on: ubuntu-latest
     environment: stag
@@ -55,6 +57,7 @@ jobs:
           echo "🚀 Deploying to Staging..."
 
   deploy-prod:
+    name: Production Deployment
     needs: deploy-staging
     runs-on: ubuntu-latest
     environment: prod
