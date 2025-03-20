@@ -11,6 +11,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check for workflow changes
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^.github/workflows/"; then
+            echo "❌ Workflow files have been modified! Rejecting..."
+            exit 1
+          else
+            echo "✅ No workflow changes detected."
+          fi
+
       - name: Log - Start Build
         run: echo "🛠️ Starting Go Docker Build Process"
 
