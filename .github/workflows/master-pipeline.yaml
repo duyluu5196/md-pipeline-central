@@ -7,9 +7,6 @@ jobs:
   terraform:
     name: Master Service Pipeline
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       - name: Checkout code
